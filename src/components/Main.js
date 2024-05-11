@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { styled } from "styled-components"
 import FilmBox from "../subpages/Filmes.js"
 import { RotatingSquare } from "react-loader-spinner";
+import axios from "axios";
 
 export default function MainScreen() { 
     const [ perguntaUm, setPerguntaUm ] = useState(false);
@@ -70,8 +71,8 @@ export default function MainScreen() {
         setPerguntaUm(true);
         if(tipo === "opcoes") setPrompt(box);
         if(tipo === "texto" && (!prompt || prompt==='')) setPrompt("qualquer um")
-        
-        //const response = await chamaback(prompt);
+    
+        const response = await axios.get('http://127.0.0.1:5000');
         //setFilmes(response);
         setTimeout(() => {
             setCarrgamento(false);    
