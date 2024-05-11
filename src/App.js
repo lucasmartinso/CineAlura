@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+//import { useState } from "react";
 import GlobalStyle from "./styles/globalStyles";
+import MainScreen from "./components/Main.js"
 
 
 export default function App() {
@@ -9,7 +10,7 @@ export default function App() {
       <GlobalStyle />
       <BrowserRouter>
           <Routes>
-              <Route path="/" element={<InitialScreen />} />
+              <Route path="/" element={<MainScreen />} />
           </Routes>
       </BrowserRouter>
     </>
