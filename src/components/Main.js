@@ -2,8 +2,43 @@ import { useState } from "react";
 import { styled } from "styled-components"
 
 export default function MainScreen() { 
-    const [ perguntaUm, setPerguntaUm ] = useState(false);
+    const [ perguntaUm, setPerguntaUm ] = useState(true);
     const [ prompt, setPrompt ] = useState(null);
+
+    const filmes = [
+        {
+            "titulo": "Missão: Impossível - Efeito Fallout (2018)",
+            "categoria": "Filme",
+            "sinopse": "Quando uma missão da IMF descontroladamente resulta em desastre, Ethan Hunt e sua equipe são forçados a correr contra o tempo após serem acusados de traição.",
+            "disponivelEm": ["Amazon Prime Video"],
+            "avaliacaoGoogle": 95,
+            "imdb": 7.9
+        },
+        {
+            "titulo": "John Wick: Capítulo 3 - Parabellum (2019)",
+            "categoria": "Filme",
+            "sinopse": "John Wick, o assassino mais temido do mundo, está em fuga depois de violar uma regra central: tirar uma vida dentro dos limites do Hotel Continental.",
+            "disponivelEm": ["Netflix", "Star+"],
+            "avaliacaoGoogle": 90,
+            "imdb": 8.2
+        },
+        {
+            "titulo": "Extraction (2020)",
+            "categoria": "Filme",
+            "sinopse": "Um jovem mercenário é enviado à Índia para resgatar o filho sequestrado de um senhor do crime.",
+            "disponivelEm": ["Netflix"],
+            "avaliacaoGoogle": 89,
+            "imdb": 8.5
+        },
+        {
+            "titulo": "Top Gun: Maverick (2022)",
+            "categoria": "Filme",
+            "sinopse": "Após mais de trinta anos de serviço, Pete \"Maverick\" Mitchell continua sendo um dos principais aviadores da Marinha. Atrevido como sempre, Maverick está testando os limites como um piloto de teste, evitando o avanço da classificação e se esquivando do fantasma de seu passado.",
+            "disponivelEm": ["Cinema", "Amazon Prime Video"],
+            "avaliacaoGoogle": 96,
+            "imdb": 8.6
+        }
+    ]    
     
     return( 
         <Container>
@@ -17,7 +52,32 @@ export default function MainScreen() {
                     </Introdução>
                 </Titulo>
                 <Germinai>
-                    
+                    <Filme>
+                        <span>{filmes[0].titulo}</span>
+                        <a><strong>Categoria:</strong> {filmes[0].categoria}</a>
+                        <a><strong>Sinopse:</strong> {filmes[0].sinopse}</a>
+                        <a><strong>Usuários Google:</strong> {filmes[0].avaliacaoGoogle}% gostaram</a>
+                        <a><strong>IMDb:</strong> {filmes[0].imdb}/10</a>
+                        <a><strong>Disponível em:</strong></a>
+                        <ul>  
+                            {filmes[1].disponivelEm.map(disp => ( 
+                                <a>- {disp}</a>
+                            ))}
+                        </ul>
+                    </Filme>
+                    <Filme>
+                        <span>{filmes[0].titulo}</span>
+                        <a><strong>Categoria:</strong> {filmes[0].categoria}</a>
+                        <a><strong>Sinopse:</strong> {filmes[0].sinopse}</a>
+                        <a><strong>Usuários Google:</strong> {filmes[0].avaliacaoGoogle}% gostaram</a>
+                        <a><strong>IMDb:</strong> {filmes[0].imdb}/10</a>
+                        <a><strong>Disponível em:</strong></a>
+                        <ul>  
+                            {filmes[1].disponivelEm.map(disp => ( 
+                                <a>- {disp}</a>
+                            ))}
+                        </ul>
+                    </Filme>
                 </Germinai>
                 <Perguntas>
                     <Pergunta>
@@ -108,6 +168,30 @@ const Germinai = styled.div`
     overflow-y: scroll;
     margin: 30px 0px;
 `
+const Filme = styled.div`
+    width: 100%; 
+    display: flex; 
+    flex-direction: column;
+
+    span { 
+        font-size: 25px; 
+        font-family: "Jersey 25 Charted", sans-serif;
+        margin: 20px 0px 10px 0px;
+    } 
+
+    a { 
+        font-size: 20px;
+        margin-bottom: 8px;
+        font-family: "Sedan SC", serif;
+        font-weight: 400;
+    } 
+
+    ul { 
+        display: flex; 
+        flex-direction: column;
+        margin: 0px 0px 20px 30px;
+    }
+`
 const Perguntas = styled.div`
     width: 100%; 
     height: 
@@ -136,7 +220,7 @@ const Caixinhhas = styled.div`
     justify-content: space-around;
 `
 const Caixinha = styled.div`
-    width: 130px;
+    width: ${props => props.perguntaUm ? ("40%") : ("30%")};
     height: 60px; 
     display: flex;
     justify-content: center; 
