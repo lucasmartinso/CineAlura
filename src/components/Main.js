@@ -1,10 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components"
+import FilmBox from "../subpages/Filmes.js"
+import { RotatingSquare } from "react-loader-spinner";
 
 export default function MainScreen() { 
-    const [ perguntaUm, setPerguntaUm ] = useState(true);
+    const [ perguntaUm, setPerguntaUm ] = useState(false);
     const [ prompt, setPrompt ] = useState(null);
+    const [ selecionaCaixa, setSelecionaCaixa ] = useState([]);
+    const [ carregamento, setCarrgamento ] = useState(false);
+    let generos = [
+        "Ação",
+        "Suspense", 
+        "Comédia", 
+        "Terror", 
+        "Aventura", 
+        "Drama", 
+        "Romance", 
+        "Documentario", 
+        "Comédia Romantica",
+        "Sitcom"
+    ]
 
+    useEffect(async () => {
+        generos = generos.sort(() => Math.random() - 0.5);
+        setSelecionaCaixa(generos.slice(0,3))
+    },[]);
+    
     const filmes = [
         {
             "titulo": "Missão: Impossível - Efeito Fallout (2018)",
@@ -40,6 +61,24 @@ export default function MainScreen() {
         }
     ]    
     
+    console.log(carregamento);
+
+    async function chamaIA(tipo, box) {
+        console.log("AQUI");
+        setCarrgamento(true);
+        console.log(carregamento);
+        setPerguntaUm(true);
+        if(tipo === "opcoes") setPrompt(box);
+        if(tipo === "texto" && (!prompt || prompt==='')) setPrompt("qualquer um")
+        
+        //const response = await chamaback(prompt);
+        //setFilmes(response);
+        setTimeout(() => {
+            setCarrgamento(false);    
+        }, 3000);
+        setPrompt(null);
+    }   
+
     return( 
         <Container>
             <p>CineAlura</p>
@@ -51,58 +90,60 @@ export default function MainScreen() {
                         <h>Qual gênero de filme/série você tá afim de assistir hoje?🎥​🎬</h>
                     </Introdução>
                 </Titulo>
-                <Germinai>
-                    <Filme>
-                        <span>{filmes[0].titulo}</span>
-                        <a><strong>Categoria:</strong> {filmes[0].categoria}</a>
-                        <a><strong>Sinopse:</strong> {filmes[0].sinopse}</a>
-                        <a><strong>Usuários Google:</strong> {filmes[0].avaliacaoGoogle}% gostaram</a>
-                        <a><strong>IMDb:</strong> {filmes[0].imdb}/10</a>
-                        <a><strong>Disponível em:</strong></a>
-                        <ul>  
-                            {filmes[1].disponivelEm.map(disp => ( 
-                                <a>- {disp}</a>
-                            ))}
-                        </ul>
-                    </Filme>
-                    <Filme>
-                        <span>{filmes[0].titulo}</span>
-                        <a><strong>Categoria:</strong> {filmes[0].categoria}</a>
-                        <a><strong>Sinopse:</strong> {filmes[0].sinopse}</a>
-                        <a><strong>Usuários Google:</strong> {filmes[0].avaliacaoGoogle}% gostaram</a>
-                        <a><strong>IMDb:</strong> {filmes[0].imdb}/10</a>
-                        <a><strong>Disponível em:</strong></a>
-                        <ul>  
-                            {filmes[1].disponivelEm.map(disp => ( 
-                                <a>- {disp}</a>
-                            ))}
-                        </ul>
-                    </Filme>
-                </Germinai>
-                <Perguntas>
-                    <Pergunta>
-                        <textarea
-                            type="text"
-                            placeholder="Digite aqui gênero ou tipo de filme você quer pro seu rolê..."
-                            value={prompt}
-                            onChange={(event) => setPrompt(event.target.value)}
-                            maxLength={100}
-                            required
+                { !carregamento ? (
+                    <>
+                    <Germinai>
+                        {filmes.map(filme => (
+                            <FilmBox 
+                                titulo = {filme.titulo} 
+                                categoria = {filme.categoria} 
+                                sinopse = {filme.sinopse} 
+                                avaliacaoGoogle = {filme.avaliacaoGoogle} 
+                                imdb = {filme.imdb}
+                                disponivelEm = {filme.disponivelEm}
+                            />
+                        ))}
+                    </Germinai>
+                    <Perguntas>
+                        <Pergunta>
+                            <textarea
+                                type="text"
+                                placeholder="Digite aqui gênero ou tipo de filme você quer pro seu rolê..."
+                                value={prompt}
+                                onChange={(event) => setPrompt(event.target.value)}
+                                maxLength={100}
+                                required
+                            />
+                            <ion-icon name="play-circle" onClick={() => chamaIA('texto',null)}></ion-icon>
+                        </Pergunta> 
+                        { perguntaUm ? (
+                            <Caixinhhas>
+                                <Caixinha>Mais sugestões como essa!!</Caixinha>
+                                <Caixinha>Acertou na mosca!!</Caixinha>
+                            </Caixinhhas>
+                        ) : (
+                            <Caixinhhas> 
+                                {selecionaCaixa.map(box => (
+                                    <Caixinha onClick={() => chamaIA('opcoes',box)}>{box}</Caixinha>
+                                ))}
+                            </Caixinhhas>
+                        ) }
+                    </Perguntas>
+                    </>
+                ) : (
+                    <Ajuste>
+                        <RotatingSquare
+                            visible={true}
+                            height="200"
+                            width="200"
+                            color="black"
+                            ariaLabel="rotating-square-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
                         />
-                    </Pergunta>
-                    { perguntaUm ? (
-                        <Caixinhhas>
-                            <Caixinha>Ação</Caixinha>
-                            <Caixinha>Ação</Caixinha>
-                        </Caixinhhas>
-                    ) : (
-                        <Caixinhhas>
-                            <Caixinha>Ação</Caixinha>
-                            <Caixinha>Aventura</Caixinha>
-                            <Caixinha>Suspense</Caixinha>
-                        </Caixinhhas>
-                    ) }
-                </Perguntas>
+                    </Ajuste>
+                    )}
+                
             </Caixa>
         </Container>
     )
@@ -131,11 +172,18 @@ const Container = styled.div`
 `
 const Caixa = styled.div`
     width: 80%; 
-    height: 80%; 
+    height: 82%; 
     background-color: white;
     border: 7px solid #302F2F;
     border-radius: 30px;
     padding: 20px;
+`
+const Ajuste = styled.div`
+    width: 100%; 
+    height: 75%;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
 `
 const Titulo = styled.div`
     width: 100%; 
@@ -143,7 +191,7 @@ const Titulo = styled.div`
 
     a { 
         font-weight: 600;
-        font-size: 30px;
+        font-size: 35px;
         margin-bottom: 10px;
     } 
 `
@@ -156,10 +204,11 @@ const Linha = styled.div`
 const Introdução = styled.div`
     width: 100%;
     text-align: left;
+    text-align: center;
 
     h { 
         font-family: "Kavoon", serif;
-        font-size: 20px;
+        font-size: 23px;
     }
 `
 const Germinai = styled.div`
@@ -168,33 +217,8 @@ const Germinai = styled.div`
     overflow-y: scroll;
     margin: 30px 0px;
 `
-const Filme = styled.div`
-    width: 100%; 
-    display: flex; 
-    flex-direction: column;
-
-    span { 
-        font-size: 25px; 
-        font-family: "Jersey 25 Charted", sans-serif;
-        margin: 20px 0px 10px 0px;
-    } 
-
-    a { 
-        font-size: 20px;
-        margin-bottom: 8px;
-        font-family: "Sedan SC", serif;
-        font-weight: 400;
-    } 
-
-    ul { 
-        display: flex; 
-        flex-direction: column;
-        margin: 0px 0px 20px 30px;
-    }
-`
 const Perguntas = styled.div`
     width: 100%; 
-    height: 
 `
 const Pergunta = styled.div`
     width: 100%; 
@@ -202,9 +226,10 @@ const Pergunta = styled.div`
     border-radius: 20px;
     background-color: white; 
     border: 3px solid black;
+    display: flex;
 
     textarea { 
-        width: 100%; 
+        width: 90%; 
         height: 100%; 
         padding: 15px;
         border-radius: 20px;
@@ -212,11 +237,29 @@ const Pergunta = styled.div`
         font-family: "Syne", sans-serif;
         font-size: 20px;
     }
+
+    ion-icon{ 
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin: 20px 0px 0px 5px;
+        transition: background 2s, color 1s, width 1s, height 1s;
+
+        &:hover,
+        &:focus { 
+            cursor: pointer;
+            transform: scale(0.98);
+            background-color: black;
+            color: white;
+            width: 55px;
+            height: 55px;
+        }
+    }
 `
 const Caixinhhas = styled.div`
     width: 100%;
     display: flex;
-    margin-top: 10px;
+    margin: 15px 0px 5px;
     justify-content: space-around;
 `
 const Caixinha = styled.div`
@@ -231,6 +274,7 @@ const Caixinha = styled.div`
     transition: background-color 2s, color 1s;
     font-size: 20px;
     font-weight: 800px;
+    text-align: center;
 
     &:hover,
     &:focus { 
