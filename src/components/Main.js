@@ -119,7 +119,7 @@ export default function MainScreen() {
                         </Pergunta> 
                         { perguntaUm ? (
                             <Caixinhhas>
-                                <Caixinha>Mais sugestões como essa!!</Caixinha>
+                                <Caixinha onClick={() => chamaIA('opcoes','mais indicacoes')}>Mais sugestões como essa!!</Caixinha>
                                 <Caixinha>Acertou na mosca!!</Caixinha>
                             </Caixinhhas>
                         ) : (
