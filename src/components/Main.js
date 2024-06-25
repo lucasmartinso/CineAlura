@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { styled } from "styled-components"
 import FilmBox from "../subpages/Filmes.js"
 import { RotatingSquare } from "react-loader-spinner";
-import axios from "axios";
+import * as filmsApi from "../requests/filmApi.js";
 
 export default function MainScreen() { 
     const [ perguntaUm, setPerguntaUm ] = useState(false);
@@ -62,17 +62,14 @@ export default function MainScreen() {
         }
     ]    
     
-    console.log(carregamento);
-
     async function chamaIA(tipo, box) {
-        console.log("AQUI");
         setCarrgamento(true);
-        console.log(carregamento);
         setPerguntaUm(true);
         if(tipo === "opcoes") setPrompt(box);
         if(tipo === "texto" && (!prompt || prompt==='')) setPrompt("qualquer um")
     
-        const response = await axios.get('http://127.0.0.1:5000');
+        const response = await filmsApi.getRecommendations();
+        console.log(response);
         //setFilmes(response);
         setTimeout(() => {
             setCarrgamento(false);    

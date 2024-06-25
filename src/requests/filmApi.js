@@ -1,6 +1,6 @@
 import api from "./api"; 
 
 export async function getRecommendations() { 
-    const response = await api.post('/api/films');
-    console.log(response);
+    const response = await api.get('/');
+    return response.data;
 }
